@@ -1,23 +1,15 @@
 from pydantic import BaseModel
 
+from user.schemas import UserCreateResponseSchema
 class BlogCreateRequestSchema(BaseModel):
     title: str
     body: str
+    user_id: int
 
-     
+    class Config(): 
+        orm_mode= True   
 
 class BlogCreateResponseSchema(BlogCreateRequestSchema):
+    creator: UserCreateResponseSchema
     class Config(): 
         orm_mode= True
-
-
-class UserCreateRequestSchema(BaseModel):
-    name: str
-    email: str
-    password: str
-
-class UserCreateResponseSchema(BaseModel):
-    id: int
-    name: str
-    email: str
-    password: str
