@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from .schemas import BlogCreateRequestSchema, BlogCreateResponseSchema
 from . import models
 from core.database import engine, get_db
+from authentication.oauth2 import  get_current_user
 
 blog_router= APIRouter()
 
@@ -21,7 +22,7 @@ def create(request: BlogCreateRequestSchema, db: Session = Depends(get_db)):
     return new_blog
 
 @blog_router.get('/blog', response_model= List[BlogCreateResponseSchema], tags= ["blogs"])
-def get_all_blogs(db: Session = Depends(get_db)):
+def get_all_blogs(db: Session = Depends(get_db), get_current_user: BlogCreateResponseSchema= Depends(get_current_user)):
     blogs = db.query(models.Blog).all()
     return blogs
 

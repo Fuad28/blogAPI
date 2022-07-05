@@ -3,9 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
+from core.hashing import Hash
+
 
 from .schemas import UserCreateRequestSchema,  UserCreateResponseSchema
-from . import models, hashing
+from . import models
 from core.database import engine, get_db
 
 user_router= APIRouter()
@@ -15,7 +17,7 @@ models.Base.metadata.create_all(engine)  #creates the tables in the db
 @user_router.post('/user', response_model= UserCreateResponseSchema, tags= ["users"])
 def create_user(request: UserCreateRequestSchema, db: Session= Depends(get_db)):
     request= dict(request)
-    request["password"]= hashing.Hash.bcrypt(request["password"])
+    request["password"]= Hash.bcrypt(request["password"])
     new_user= models.User(**request)
     db.add(new_user)
     db.commit()
